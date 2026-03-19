@@ -1,7 +1,7 @@
 {
   "name": "@agital/trello-mcp",
   "version": "1.0.0",
-  "description": "Gepatchter Trello MCP Server für agital.online mit shortLink-Support",
+  "type": "module", "description": "Gepatchter Trello MCP Server für agital.online mit shortLink-Support",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

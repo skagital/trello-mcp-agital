@@ -4,275 +4,107 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { 
   CallToolRequestSchema, 
-  ListToolsRequestSchema,
-  InitializeRequestSchema,
-  ListResourcesRequestSchema,
-  ListPromptsRequestSchema 
+  ListToolsRequestSchema
 } from '@modelcontextprotocol/sdk/types.js';
 
-// Read credentials from environment variables
 const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
 const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
-// No console output in MCP mode - only JSON-RPC on stdout!
 if (!TRELLO_API_KEY || !TRELLO_TOKEN) {
   process.exit(1);
 }
 
-// Import tools with credential injection
 import { 
-  listBoardsTool, 
-  getBoardDetailsTool,
-  getListsTool,
-  handleListBoards,
-  handleGetBoardDetails,
-  handleGetLists
+  listBoardsTool, getBoardDetailsTool, getListsTool,
+  handleListBoards, handleGetBoardDetails, handleGetLists
 } from './tools/boards.js';
 
 import { 
-  createCardTool, 
-  updateCardTool,
-  moveCardTool,
-  getCardTool,
-  handleCreateCard,
-  handleUpdateCard,
-  handleMoveCard,
-  handleGetCard
+  createCardTool, updateCardTool, moveCardTool, getCardTool,
+  handleCreateCard, handleUpdateCard, handleMoveCard, handleGetCard
 } from './tools/cards.js';
 
-import {
-  trelloSearchTool,
-  handleTrelloSearch
-} from './tools/search.js';
+import { trelloSearchTool, handleTrelloSearch } from './tools/search.js';
 
 import {
-  trelloGetListCardsTool,
-  handleTrelloGetListCards,
-  trelloCreateListTool,
-  handleTrelloCreateList,
-  trelloAddCommentTool,
-  handleTrelloAddComment
+  trelloGetListCardsTool, handleTrelloGetListCards,
+  trelloCreateListTool, handleTrelloCreateList,
+  trelloAddCommentTool, handleTrelloAddComment
 } from './tools/lists.js';
 
 import {
-  trelloGetUserBoardsTool,
-  handleTrelloGetUserBoards,
-  trelloGetMemberTool,
-  handleTrelloGetMember
+  trelloGetUserBoardsTool, handleTrelloGetUserBoards,
+  trelloGetMemberTool, handleTrelloGetMember
 } from './tools/members.js';
 
 import {
-  trelloGetBoardCardsTool,
-  handleTrelloGetBoardCards,
-  trelloGetCardActionsTool,
-  handleTrelloGetCardActions,
-  trelloGetCardAttachmentsTool,
-  handleTrelloGetCardAttachments,
-  trelloGetCardChecklistsTool,
-  handleTrelloGetCardChecklists,
-  trelloGetBoardMembersTool,
-  handleTrelloGetBoardMembers,
-  trelloGetBoardLabelsTool,
-  handleTrelloGetBoardLabels
+  trelloGetBoardCardsTool, handleTrelloGetBoardCards,
+  trelloGetCardActionsTool, handleTrelloGetCardActions,
+  trelloGetCardAttachmentsTool, handleTrelloGetCardAttachments,
+  trelloGetCardChecklistsTool, handleTrelloGetCardChecklists,
+  trelloGetBoardMembersTool, handleTrelloGetBoardMembers,
+  trelloGetBoardLabelsTool, handleTrelloGetBoardLabels
 } from './tools/advanced.js';
 
-// Create server instance
 const server = new Server(
   {
-    name: 'trello-mcp',
-    version: '1.0.0',
+    name: 'trello-agital',
+    version: '1.2.0',
   },
   {
     capabilities: {
       tools: {},
-      resources: {},
-      prompts: {},
     },
   }
 );
 
-// Initialize handler
-server.setRequestHandler(InitializeRequestSchema, async () => {
-  return {
-    protocolVersion: '2024-11-05',
-    capabilities: {
-      tools: {},
-      resources: {},
-      prompts: {}
-    },
-    serverInfo: {
-      name: 'trello-mcp',
-      version: '1.0.0'
-    }
-  };
-});
-
-// List available tools
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      // Phase 1: Essential tools
-      trelloSearchTool,
-      trelloGetUserBoardsTool,
-      getBoardDetailsTool,
-      getCardTool,
-      createCardTool,
-      // Phase 2: Core operations
-      updateCardTool,
-      moveCardTool,
-      trelloAddCommentTool,
-      trelloGetListCardsTool,
-      trelloCreateListTool,
-      // Original tools (maintained for compatibility)
-      listBoardsTool,
-      getListsTool,
-      // Member management
-      trelloGetMemberTool,
-      // Phase 3: Advanced features
-      trelloGetBoardCardsTool,
-      trelloGetCardActionsTool,
-      trelloGetCardAttachmentsTool,
-      trelloGetCardChecklistsTool,
-      trelloGetBoardMembersTool,
-      trelloGetBoardLabelsTool
+      trelloSearchTool, trelloGetUserBoardsTool, getBoardDetailsTool,
+      getCardTool, createCardTool, updateCardTool, moveCardTool,
+      trelloAddCommentTool, trelloGetListCardsTool, trelloCreateListTool,
+      listBoardsTool, getListsTool, trelloGetMemberTool,
+      trelloGetBoardCardsTool, trelloGetCardActionsTool,
+      trelloGetCardAttachmentsTool, trelloGetCardChecklistsTool,
+      trelloGetBoardMembersTool, trelloGetBoardLabelsTool
     ]
   };
 });
 
-// Handle tool calls with automatic credential injection
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
+  const argsWithCredentials = { ...args, apiKey: TRELLO_API_KEY, token: TRELLO_TOKEN };
   
-  // Inject credentials into arguments
-  const argsWithCredentials = {
-    ...args,
-    apiKey: TRELLO_API_KEY,
-    token: TRELLO_TOKEN
-  };
-  
-  try {
-    let result;
-    
-    switch (name) {
-      // Phase 1: Essential tools
-      case 'trello_search':
-        result = await handleTrelloSearch(argsWithCredentials);
-        break;
-      
-      case 'trello_get_user_boards':
-        result = await handleTrelloGetUserBoards(argsWithCredentials);
-        break;
-      
-      case 'get_board_details':
-        result = await handleGetBoardDetails(argsWithCredentials);
-        break;
-      
-      case 'get_card':
-        result = await handleGetCard(argsWithCredentials);
-        break;
-      
-      case 'create_card':
-        result = await handleCreateCard(argsWithCredentials);
-        break;
-      
-      // Phase 2: Core operations
-      case 'update_card':
-        result = await handleUpdateCard(argsWithCredentials);
-        break;
-      
-      case 'move_card':
-        result = await handleMoveCard(argsWithCredentials);
-        break;
-      
-      case 'trello_add_comment':
-        result = await handleTrelloAddComment(argsWithCredentials);
-        break;
-      
-      case 'trello_get_list_cards':
-        result = await handleTrelloGetListCards(argsWithCredentials);
-        break;
-      
-      case 'trello_create_list':
-        result = await handleTrelloCreateList(argsWithCredentials);
-        break;
-      
-      // Original tools (maintained for compatibility)
-      case 'list_boards':
-        result = await handleListBoards(argsWithCredentials);
-        break;
-      
-      case 'get_lists':
-        result = await handleGetLists(argsWithCredentials);
-        break;
-      
-      // Member management
-      case 'trello_get_member':
-        result = await handleTrelloGetMember(argsWithCredentials);
-        break;
-      
-      // Phase 3: Advanced features
-      case 'trello_get_board_cards':
-        result = await handleTrelloGetBoardCards(argsWithCredentials);
-        break;
-      
-      case 'trello_get_card_actions':
-        result = await handleTrelloGetCardActions(argsWithCredentials);
-        break;
-      
-      case 'trello_get_card_attachments':
-        result = await handleTrelloGetCardAttachments(argsWithCredentials);
-        break;
-      
-      case 'trello_get_card_checklists':
-        result = await handleTrelloGetCardChecklists(argsWithCredentials);
-        break;
-      
-      case 'trello_get_board_members':
-        result = await handleTrelloGetBoardMembers(argsWithCredentials);
-        break;
-      
-      case 'trello_get_board_labels':
-        result = await handleTrelloGetBoardLabels(argsWithCredentials);
-        break;
-        
-      default:
-        throw new Error(`Unknown tool: ${name}`);
-    }
-    
-    return result;
-    
-  } catch (error) {
-    throw error;
+  switch (name) {
+    case 'trello_search': return await handleTrelloSearch(argsWithCredentials);
+    case 'trello_get_user_boards': return await handleTrelloGetUserBoards(argsWithCredentials);
+    case 'get_board_details': return await handleGetBoardDetails(argsWithCredentials);
+    case 'get_card': return await handleGetCard(argsWithCredentials);
+    case 'create_card': return await handleCreateCard(argsWithCredentials);
+    case 'update_card': return await handleUpdateCard(argsWithCredentials);
+    case 'move_card': return await handleMoveCard(argsWithCredentials);
+    case 'trello_add_comment': return await handleTrelloAddComment(argsWithCredentials);
+    case 'trello_get_list_cards': return await handleTrelloGetListCards(argsWithCredentials);
+    case 'trello_create_list': return await handleTrelloCreateList(argsWithCredentials);
+    case 'list_boards': return await handleListBoards(argsWithCredentials);
+    case 'get_lists': return await handleGetLists(argsWithCredentials);
+    case 'trello_get_member': return await handleTrelloGetMember(argsWithCredentials);
+    case 'trello_get_board_cards': return await handleTrelloGetBoardCards(argsWithCredentials);
+    case 'trello_get_card_actions': return await handleTrelloGetCardActions(argsWithCredentials);
+    case 'trello_get_card_attachments': return await handleTrelloGetCardAttachments(argsWithCredentials);
+    case 'trello_get_card_checklists': return await handleTrelloGetCardChecklists(argsWithCredentials);
+    case 'trello_get_board_members': return await handleTrelloGetBoardMembers(argsWithCredentials);
+    case 'trello_get_board_labels': return await handleTrelloGetBoardLabels(argsWithCredentials);
+    default: throw new Error(`Unknown tool: ${name}`);
   }
 });
 
-// List resources (empty for now)
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-  return { resources: [] };
-});
-
-// List prompts (empty for now)
-server.setRequestHandler(ListPromptsRequestSchema, async () => {
-  return { prompts: [] };
-});
-
-// Error handler
-process.on('uncaughtException', (_error) => {
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (_reason) => {
-  process.exit(1);
-});
-
-// Start the server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  
-  // Server is running - no output needed
 }
 
-main().catch((_error) => {
+main().catch(() => {
   process.exit(1);
 });

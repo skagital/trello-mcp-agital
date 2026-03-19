@@ -1,8 +1,8 @@
 {
-  "manifest_version": "0.2",
+  "manifest_version": "0.3",
   "name": "trello-agital",
   "display_name": "Trello agital.online",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Trello MCP Server fuer agital.online mit shortLink/URL Support",
   "author": {
     "name": "agital.online GmbH"
@@ -12,7 +12,7 @@
     "entry_point": "dist/index.js",
     "mcp_config": {
       "command": "node",
-      "args": ["dist/index.js"],
+      "args": ["${__dirname}/dist/index.js"],
       "env": {
         "TRELLO_API_KEY": "${user_config.trello_api_key}",
         "TRELLO_TOKEN": "${user_config.trello_token}"
