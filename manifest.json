@@ -9,19 +9,27 @@
   },
   "server": {
     "type": "node",
-    "entry_point": "dist/index.js"
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "TRELLO_API_KEY": "${user_config.trello_api_key}",
+        "TRELLO_TOKEN": "${user_config.trello_token}"
+      }
+    }
   },
   "user_config": {
     "trello_api_key": {
       "type": "string",
-      "label": "Trello API Key",
+      "title": "Trello API Key",
       "description": "API Key von https://trello.com/power-ups/admin",
       "required": true,
       "sensitive": true
     },
     "trello_token": {
       "type": "string",
-      "label": "Trello Token",
+      "title": "Trello Token",
       "description": "Token generieren auf der API Key Seite (read/write, never expires)",
       "required": true,
       "sensitive": true
