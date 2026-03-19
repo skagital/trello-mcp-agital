@@ -94,7 +94,7 @@ const server = new Server(
 // Initialize handler
 server.setRequestHandler(InitializeRequestSchema, async () => {
   return {
-    protocolVersion: '2025-11-25',
+    protocolVersion: '2024-11-05',
     capabilities: {
       tools: {},
       resources: {},
