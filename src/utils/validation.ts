@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-const trelloIdSchema = z.string().regex(/^[a-f0-9]{24}$/i, 'Must be a valid 24-character Trello ID');
-const trelloIdOptionalSchema = z.string().regex(/^[a-f0-9]{24}$/i, 'Must be a valid 24-character Trello ID').optional();
+const trelloIdSchema = z.string().min(1, 'ID must not be empty');
+const trelloIdOptionalSchema = z.string().min(1, 'ID must not be empty').optional();
 
 export const credentialsSchema = z.object({
   apiKey: z.string().min(1, 'API key is required'),
