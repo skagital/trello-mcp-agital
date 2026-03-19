@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "lib": ["ES2023", "DOM"],
+    "lib": ["ES2023"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -12,34 +12,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noEmit": false,
-    "isolatedModules": true,
-    "allowArbitraryExtensions": false
+    "isolatedModules": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    ".github",
-    "coverage"
-  ],
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
