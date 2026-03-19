@@ -1,8 +1,8 @@
 # agital Trello MCP Server — Setup & Nutzung
 
 Vollständige Dokumentation für den internen Trello MCP Server der agital.online GmbH.
-Dieses Dokument richtet sich an alle Entwickler im Team und deckt die Einrichtung
-auf **Windows**, **macOS** und **Linux** ab, sowohl für Claude Desktop als auch für Claude Code (CLI).
+Deckt die Einrichtung auf **Windows**, **macOS** und **Linux** ab,
+sowohl für Claude Desktop als auch für Claude Code (CLI).
 
 ---
 
@@ -38,13 +38,12 @@ Besonderheiten gegenüber dem Standard-Trello-MCP:
 
 | Was | Wofür | Prüfen |
 |---|---|---|
-| Node.js 18+ | Server bauen und ausführen | `node --version` |
-| Git | Repo klonen | `git --version` |
 | Trello Account | Zugriff auf Product Backlog Board | — |
 | Claude Desktop und/oder Claude Code | KI-Client | — |
+| Node.js 18+ | Nur für Claude Code CLI Setup nötig | `node --version` |
+| Git | Nur für Claude Code CLI Setup nötig | `git --version` |
 
-**Hinweis für Windows:** Falls Node.js nicht global verfügbar ist (z.B. hinter nvm4w),
-notiere dir den vollen Pfad zur `node.exe` (z.B. `C:\nvm4w\nodejs\node.exe`).
+Claude Desktop bringt eine eigene Node.js Runtime mit. Für das Setup über die `.mcpb` Extension ist kein Node.js nötig.
 
 ---
 
@@ -67,128 +66,38 @@ Jeder Entwickler braucht seinen eigenen API Key und Token. Diese werden niemals 
 3. Autorisiere den Zugriff
 4. Kopiere den **Token**
 
-Bewahre beides sicher auf (z.B. in einem Passwort-Manager). Du brauchst Key und Token für das Setup.
+Bewahre beides sicher auf (z.B. in einem Passwort-Manager).
 
 ---
 
 ## Setup: Claude Desktop
 
-### Option A: Desktop Extension (.mcpb) — Empfohlen
+Funktioniert auf **Windows und macOS** identisch.
 
-Die einfachste Methode. Kein Terminal nötig. Funktioniert auf **Windows und macOS** identisch.
+### Option A: Über die Organisation (empfohlen)
 
-1. Lade die neueste `trello-agital.mcpb` aus den
-   [GitHub Releases](https://github.com/skagital/trello-mcp-agital/releases) herunter
-2. Doppelklicke die Datei. Claude Desktop öffnet den Installations-Dialog.
+Falls ein Admin die Extension im Team-Verzeichnis bereitgestellt hat:
+
+1. Öffne Claude Desktop
+2. Gehe zu **Settings → Extensions**
+3. Suche nach "Trello agital.online"
+4. Klicke **Installieren**
+5. Gib deinen **Trello API Key** und **Token** ein
+6. Fertig
+
+### Option B: Manuelle Installation per .mcpb
+
+1. Lade die neueste `.mcpb` aus den [GitHub Releases](https://github.com/skagital/trello-mcp-agital/releases) herunter
+2. In Claude Desktop: **Settings → Extensions → Install Extension** und die `.mcpb` Datei auswählen
+   (Doppelklick auf die Datei funktioniert unter macOS, unter Windows je nach Konfiguration)
 3. Gib deinen **Trello API Key** und **Token** ein, wenn du danach gefragt wirst
-4. Fertig. Die Credentials werden verschlüsselt gespeichert (Windows: Credential Manager, macOS: Keychain).
-5. Starte einen neuen Chat und teste: `Zeig mir meine PBIs`
+4. Die Credentials werden verschlüsselt gespeichert (Windows: Credential Manager, macOS: Keychain)
+5. Starte einen neuen Chat und teste: `Zeig mir Karte 6DOiJhV0`
 
-### Option B: Manuelle Konfiguration
+### Verbindung prüfen
 
-Falls die .mcpb nicht funktioniert oder du mehr Kontrolle willst.
-
-#### Schritt 1: Repo klonen und bauen
-
-**Windows (PowerShell):**
-
-```powershell
-git clone https://github.com/skagital/trello-mcp-agital.git "$env:APPDATA\Claude\mcp-servers\trello-mcp"
-cd "$env:APPDATA\Claude\mcp-servers\trello-mcp"
-npm install
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\apply-shortlink-patch.ps1
-npm run build
-```
-
-**macOS:**
-
-```bash
-git clone https://github.com/skagital/trello-mcp-agital.git ~/.local/share/agital/trello-mcp
-cd ~/.local/share/agital/trello-mcp
-npm install
-npm run build
-```
-
-**Linux:**
-
-```bash
-git clone https://github.com/skagital/trello-mcp-agital.git ~/.local/share/agital/trello-mcp
-cd ~/.local/share/agital/trello-mcp
-npm install
-npm run build
-```
-
-#### Schritt 2: Claude Desktop Config bearbeiten
-
-**Windows:** Öffne die Config in einem Editor:
-
-```powershell
-notepad "$env:APPDATA\Claude\claude_desktop_config.json"
-```
-
-**macOS:**
-
-```bash
-code ~/Library/Application\ Support/Claude/claude_desktop_config.json
-```
-
-**Linux:**
-
-```bash
-code ~/.config/Claude/claude_desktop_config.json
-```
-
-#### Schritt 3: Server-Eintrag hinzufügen
-
-Füge den `trello-agital` Block in das `mcpServers`-Objekt ein. Falls schon andere Server
-konfiguriert sind, füge den Block komma-getrennt hinzu.
-
-**Windows:**
-
-```json
-{
-  "mcpServers": {
-    "trello-agital": {
-      "command": "C:\\nvm4w\\nodejs\\node.exe",
-      "args": ["C:\\Users\\DEIN_USERNAME\\AppData\\Roaming\\Claude\\mcp-servers\\trello-mcp\\dist\\index.js"],
-      "env": {
-        "TRELLO_API_KEY": "DEIN_API_KEY",
-        "TRELLO_TOKEN": "DEIN_TOKEN"
-      }
-    }
-  }
-}
-```
-
-Ersetze `DEIN_USERNAME` mit deinem Windows-Usernamen und passe den `node.exe` Pfad an,
-falls Node.js bei dir woanders liegt. Falls Node.js global installiert ist, reicht `"command": "node"`.
-
-**macOS / Linux:**
-
-```json
-{
-  "mcpServers": {
-    "trello-agital": {
-      "command": "node",
-      "args": ["/Users/DEIN_USERNAME/.local/share/agital/trello-mcp/dist/index.js"],
-      "env": {
-        "TRELLO_API_KEY": "DEIN_API_KEY",
-        "TRELLO_TOKEN": "DEIN_TOKEN"
-      }
-    }
-  }
-}
-```
-
-Hinweis: `~` wird in JSON nicht aufgelöst, daher den vollen Pfad verwenden.
-Auf Linux entsprechend `/home/DEIN_USERNAME/...`.
-
-#### Schritt 4: Neustart und Test
-
-Claude Desktop komplett beenden (nicht nur Fenster schließen, sondern auch aus dem
-System Tray bzw. der Menüleiste) und neu starten.
-In einem neuen Chat testen: `Zeig mir Karte 6DOiJhV0`
+Nach der Installation sollte unter Settings → Extensions "Trello agital.online" als "Aktiviert" erscheinen.
+Falls stattdessen "Server disconnected" erscheint, siehe [Troubleshooting](#troubleshooting).
 
 ---
 
@@ -196,22 +105,20 @@ In einem neuen Chat testen: `Zeig mir Karte 6DOiJhV0`
 
 ### Schritt 1: Repo klonen und bauen
 
-**Windows (PowerShell):**
-
-```powershell
-git clone https://github.com/skagital/trello-mcp-agital.git "$env:LOCALAPPDATA\agital\trello-mcp"
-cd "$env:LOCALAPPDATA\agital\trello-mcp"
-npm install
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\apply-shortlink-patch.ps1
-npm run build
-```
-
 **macOS / Linux:**
 
 ```bash
 git clone https://github.com/skagital/trello-mcp-agital.git ~/.local/share/agital/trello-mcp
 cd ~/.local/share/agital/trello-mcp
+npm install
+npm run build
+```
+
+**Windows (PowerShell):**
+
+```powershell
+git clone https://github.com/skagital/trello-mcp-agital.git "$env:LOCALAPPDATA\agital\trello-mcp"
+cd "$env:LOCALAPPDATA\agital\trello-mcp"
 npm install
 npm run build
 ```
@@ -221,17 +128,14 @@ Prüfen ob der Build erfolgreich war:
 ```bash
 # macOS/Linux
 ls dist/index.js
-```
 
-```powershell
-# Windows
+# Windows (PowerShell)
 Test-Path dist\index.js
 ```
 
 ### Schritt 2: MCP Server registrieren
 
-Der Server wird im `user` Scope registriert. Das bedeutet: Er ist in **allen** Projekten verfügbar,
-nicht nur im aktuellen Verzeichnis.
+Der Server wird im `user` Scope registriert, d.h. er ist in **allen** Projekten verfügbar.
 
 **macOS / Linux:**
 
@@ -251,54 +155,40 @@ claude mcp add trello-agital --scope user `
   -- node "$env:LOCALAPPDATA\agital\trello-mcp\dist\index.js"
 ```
 
-Hinweis: In PowerShell wird `` ` `` (Backtick) statt `\` (Backslash) für Zeilenumbrüche verwendet.
-
 ### Schritt 3: Verbindung prüfen
 
 ```bash
-# Claude Code starten (alle Plattformen gleich)
 claude
-
 # Im Claude Code Prompt:
 /mcp
 # Sollte "trello-agital: connected" anzeigen
 ```
 
-Oder direkt testen:
-
-```
-> Zeig mir meine Trello PBIs
-```
-
-### Hinweise zu den Scopes
+### Hinweis zu den Scopes
 
 | Scope | Wo gespeichert | Sichtbar für | Wann nutzen |
 |---|---|---|---|
 | `local` | `~/.claude.json` (projektspezifisch) | Nur du, nur dieses Projekt | Zum Experimentieren |
 | `project` | `.mcp.json` im Repo | Alle die das Repo klonen | Geteilte Server ohne Credentials |
-| `user` | `~/.claude.json` (global) | Nur du, alle Projekte | **Unser Standard: Trello mit persönlichen Credentials** |
+| `user` | `~/.claude.json` (global) | Nur du, alle Projekte | **Unser Standard** |
 
-Wir nutzen `user` Scope, weil:
-- Der Trello-Zugriff projektübergreifend gebraucht wird
-- Jeder seine eigenen Credentials hat
-- Credentials nicht ins Repo gehören
+Wir nutzen `user` Scope, weil der Trello-Zugriff projektübergreifend gebraucht wird und die Credentials privat bleiben müssen.
 
 ---
 
 ## Board-Kontext-Datei einrichten
 
 Die Datei `trello-board-context.md` enthält alle Listen-IDs, Label-IDs und Member-IDs
-eures Boards. Sie wird wöchentlich automatisch aktualisiert (GitHub Action).
+des Product Backlog Boards. Sie wird wöchentlich automatisch per GitHub Action aktualisiert.
 
 ### Warum?
 
-Ohne die Kontext-Datei muss Claude bei jedem PBI-Erstellen erst das gesamte Board abfragen,
-um die richtige Listen-ID, Label-ID oder Member-ID zu finden. Das kostet 2-3 API-Calls
-und viele Tokens. Mit der Kontext-Datei kennt Claude alle IDs sofort.
+Ohne die Kontext-Datei muss Claude bei jedem PBI-Erstellen erst das gesamte Board abfragen
+(2-3 API-Calls, viele Tokens). Mit der Kontext-Datei kennt Claude alle IDs sofort.
 
 ### Einrichten in Claude Code
 
-Füge in die `CLAUDE.md` deines Projekts (oder erstelle eine) folgende Zeile ein:
+Füge in die `CLAUDE.md` deines Projekts folgende Zeile ein:
 
 **macOS / Linux:**
 
@@ -316,52 +206,28 @@ Für Trello Board-Metadaten (Listen, Labels, Members) siehe:
 
 ### Einrichten in Claude Desktop
 
-Funktioniert auf allen Plattformen gleich:
-
 1. Öffne dein Projekt in Claude Desktop
 2. Gehe zu Project Knowledge
 3. Lade die Datei `trello-board-context.md` aus dem Repo hoch
 
-### Manuell aktualisieren
+### Aktualisierung
 
-Falls sich Labels, Listen oder Team-Mitglieder geändert haben:
+Die GitHub Action aktualisiert die Datei jeden Montag automatisch. Ein `git pull` im lokalen Repo reicht.
 
-**macOS / Linux:**
+Manuell aktualisieren (macOS/Linux, benötigt `curl` und `jq`):
 
 ```bash
 cd ~/.local/share/agital/trello-mcp
-TRELLO_API_KEY="dein-key" TRELLO_TOKEN="dein-token" bash scripts/generate-trello-context.sh
+TRELLO_API_KEY="key" TRELLO_TOKEN="token" bash scripts/generate-trello-context.sh
 ```
-
-Benötigt `curl` und `jq` (auf macOS: `brew install jq`, auf Linux: `sudo apt install jq`).
-
-**Windows:** Da das Generator-Script Bash benötigt, gibt es drei Optionen:
-
-Option 1 (Git Bash):
-```powershell
-cd "$env:LOCALAPPDATA\agital\trello-mcp"
-$env:TRELLO_API_KEY="dein-key"; $env:TRELLO_TOKEN="dein-token"
-& "C:\Program Files\Git\bin\bash.exe" scripts/generate-trello-context.sh
-```
-
-Option 2 (WSL):
-```powershell
-wsl bash -c "cd ~/.local/share/agital/trello-mcp && TRELLO_API_KEY=dein-key TRELLO_TOKEN=dein-token bash scripts/generate-trello-context.sh"
-```
-
-Option 3 (Einfachste): Gar nicht lokal ausführen. Die GitHub Action aktualisiert
-die Datei wöchentlich automatisch. Ein `git pull` reicht.
 
 ---
 
 ## Nutzung im Alltag
 
-Die folgenden Beispiele funktionieren in Claude Desktop und Claude Code identisch,
-auf allen Plattformen.
+Alle Beispiele funktionieren in Claude Desktop und Claude Code identisch, auf allen Plattformen.
 
 ### Karte per URL abrufen
-
-Kopiere einfach die Trello-URL aus dem Browser:
 
 ```
 Hol mir die Karte https://trello.com/c/6DOiJhV0/123-login-bug
@@ -379,8 +245,6 @@ Zeig mir Karte 6DOiJhV0
 Erstelle ein PBI "Login-Seite responsive machen" in der Spalte "In Vorbereitung",
 Label "esyoil", zugewiesen an Bennet Gallein.
 ```
-
-Claude kennt die IDs aus der Kontext-Datei und erstellt die Karte mit einem einzigen API-Call.
 
 ### Meine PBIs anzeigen
 
@@ -432,23 +296,21 @@ Suche nach "responsive" im Product Backlog
 
 ## Befehlsreferenz
 
-Übersicht aller verfügbaren MCP Tools:
-
 | Tool | Beschreibung | Beispiel-Trigger |
 |---|---|---|
 | `get_card` | Karte per ID/shortLink/URL abrufen | "Zeig mir Karte X" |
 | `create_card` | Neue Karte erstellen | "Erstelle ein PBI..." |
-| `update_card` | Karte bearbeiten (Name, Beschreibung, Due Date, Labels) | "Ändere die Beschreibung von..." |
+| `update_card` | Karte bearbeiten | "Ändere die Beschreibung von..." |
 | `move_card` | Karte in andere Spalte verschieben | "Verschiebe Karte X nach Y" |
-| `trello_add_comment` | Kommentar zu einer Karte hinzufügen | "Kommentiere auf Karte X..." |
-| `trello_search` | Volltextsuche über alle Karten | "Suche nach..." |
-| `trello_get_list_cards` | Alle Karten einer Spalte auflisten | "Was liegt in Working?" |
+| `trello_add_comment` | Kommentar hinzufügen | "Kommentiere auf Karte X..." |
+| `trello_search` | Volltextsuche | "Suche nach..." |
+| `trello_get_list_cards` | Karten einer Spalte auflisten | "Was liegt in Working?" |
 | `get_board_details` | Board-Struktur anzeigen | "Zeig mir das Board" |
 | `get_lists` | Alle Spalten auflisten | "Welche Spalten gibt es?" |
-| `trello_get_board_members` | Alle Board-Mitglieder anzeigen | "Wer ist im Board?" |
-| `trello_get_board_labels` | Alle Labels anzeigen | "Welche Labels gibt es?" |
+| `trello_get_board_members` | Board-Mitglieder anzeigen | "Wer ist im Board?" |
+| `trello_get_board_labels` | Labels anzeigen | "Welche Labels gibt es?" |
 | `trello_get_board_cards` | Alle Karten des Boards | "Zeig mir alle offenen Karten" |
-| `trello_get_card_actions` | Aktivitätsverlauf einer Karte | "Was ist auf Karte X passiert?" |
+| `trello_get_card_actions` | Aktivitätsverlauf | "Was ist auf Karte X passiert?" |
 | `trello_get_card_attachments` | Anhänge einer Karte | "Welche Anhänge hat Karte X?" |
 | `trello_get_card_checklists` | Checklisten einer Karte | "Zeig mir die Checkliste von X" |
 
@@ -456,91 +318,36 @@ Suche nach "responsive" im Product Backlog
 
 ## Troubleshooting
 
-### "Server not found" / "trello-agital: disconnected"
+### Claude Desktop: "Server disconnected"
 
-Prüfe ob der Server gebaut ist:
+Häufigste Ursachen:
 
-```bash
-# macOS/Linux
-ls ~/.local/share/agital/trello-mcp/dist/index.js
-```
+1. **Credentials falsch:** Settings → Extensions → Trello agital.online → Konfigurieren. API Key und Token prüfen. Test:
+   ```bash
+   # macOS/Linux
+   curl -s "https://api.trello.com/1/boards/56a7e3b1ed97adbf2a2515d9?key=DEIN_KEY&token=DEIN_TOKEN&fields=name"
+   ```
+   ```powershell
+   # Windows
+   Invoke-RestMethod "https://api.trello.com/1/boards/56a7e3b1ed97adbf2a2515d9?key=DEIN_KEY&token=DEIN_TOKEN&fields=name"
+   ```
+   Sollte `Product Backlog` zurückgeben.
 
-```powershell
-# Windows
-Test-Path "$env:LOCALAPPDATA\agital\trello-mcp\dist\index.js"
-# oder (wenn unter %APPDATA% installiert):
-Test-Path "$env:APPDATA\Claude\mcp-servers\trello-mcp\dist\index.js"
-```
+2. **Alte Version gecached:** Extension deinstallieren, Claude Desktop komplett schließen (auch System Tray / Menüleiste), prüfen ob der Ordner unter `%APPDATA%\Claude\Claude Extensions\` gelöscht wurde, Claude Desktop starten, Extension neu installieren.
 
-Falls die Datei fehlt, nochmal bauen:
+3. **Generelles Extension-Problem:** Prüfe ob andere Extensions (z.B. Desktop Commander) funktionieren. Falls nein, ist es ein Claude Desktop Problem, nicht unser Server.
 
-```bash
-# macOS/Linux
-cd ~/.local/share/agital/trello-mcp && npm install && npm run build
-```
-
-```powershell
-# Windows
-cd "$env:LOCALAPPDATA\agital\trello-mcp"; npm install; npm run build
-```
-
-### "Invalid API key" / "unauthorized"
-
-Prüfe deine Credentials mit einem Schnelltest:
+### Claude Code: "trello-agital: disconnected"
 
 ```bash
-# macOS/Linux
-curl -s "https://api.trello.com/1/boards/56a7e3b1ed97adbf2a2515d9?key=DEIN_KEY&token=DEIN_TOKEN&fields=name"
-```
-
-```powershell
-# Windows
-Invoke-RestMethod "https://api.trello.com/1/boards/56a7e3b1ed97adbf2a2515d9?key=DEIN_KEY&token=DEIN_TOKEN&fields=name"
-```
-
-Sollte `Product Backlog` als Board-Name zurückgeben. Falls nicht: Key/Token auf
-https://trello.com/power-ups/admin erneuern.
-
-### Claude Code: MCP Server wird nicht erkannt
-
-```bash
-# Registrierung prüfen (alle Plattformen)
+# Registrierung prüfen
 claude mcp list
+
+# Server manuell testen
+node ~/.local/share/agital/trello-mcp/dist/index.js
+# Sollte ohne Ausgabe hängen (wartet auf stdin). Ctrl+C zum Beenden.
+# Falls sofort beendet: TRELLO_API_KEY und TRELLO_TOKEN als Env-Vars setzen.
 ```
-
-Falls nicht vorhanden, neu registrieren:
-
-```bash
-# macOS/Linux
-claude mcp add trello-agital --scope user \
-  -e TRELLO_API_KEY="DEIN_KEY" \
-  -e TRELLO_TOKEN="DEIN_TOKEN" \
-  -- node ~/.local/share/agital/trello-mcp/dist/index.js
-```
-
-```powershell
-# Windows
-claude mcp add trello-agital --scope user `
-  -e TRELLO_API_KEY="DEIN_KEY" `
-  -e TRELLO_TOKEN="DEIN_TOKEN" `
-  -- node "$env:LOCALAPPDATA\agital\trello-mcp\dist\index.js"
-```
-
-### Claude Desktop: "Dieser Konnektor hat keine verfügbaren Tools"
-
-Das deutet auf ein MCP-Protokoll-Mismatch hin. Server aktualisieren:
-
-```bash
-# macOS/Linux
-cd ~/.local/share/agital/trello-mcp && git pull && npm install && npm run build
-```
-
-```powershell
-# Windows
-cd "$env:LOCALAPPDATA\agital\trello-mcp"; git pull; npm install; npm run build
-```
-
-Dann Claude Desktop komplett beenden (auch aus dem System Tray / der Menüleiste) und neu starten.
 
 ### Windows: ExecutionPolicy blockiert Scripts
 
@@ -548,22 +355,15 @@ Dann Claude Desktop komplett beenden (auch aus dem System Tray / der Menüleiste
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-Das gilt nur für die aktuelle PowerShell-Session und ändert keine systemweiten Einstellungen.
-
-### Windows: node.exe wird nicht gefunden
-
-Falls `node` nicht im PATH liegt (z.B. bei nvm4w), finde den vollen Pfad:
+### Windows: node wird nicht gefunden
 
 ```powershell
-Get-Command node -ErrorAction SilentlyContinue | Select-Object Source
-# oder
 where.exe node
 ```
 
-Diesen Pfad dann in der `claude_desktop_config.json` als `"command"` eintragen,
-z.B. `"command": "C:\\nvm4w\\nodejs\\node.exe"`.
+Den vollen Pfad dann im `claude mcp add` Befehl verwenden.
 
-### macOS: Permission denied beim Ausführen von Scripts
+### macOS: Permission denied
 
 ```bash
 chmod +x ~/.local/share/agital/trello-mcp/scripts/*.sh
@@ -571,17 +371,12 @@ chmod +x ~/.local/share/agital/trello-mcp/scripts/*.sh
 
 ### Linux: jq nicht installiert
 
-Das Generator-Script benötigt `jq`:
-
 ```bash
 # Debian/Ubuntu
 sudo apt install jq
 
 # Arch
 sudo pacman -S jq
-
-# Alpine
-apk add jq
 ```
 
 ---
@@ -590,58 +385,43 @@ apk add jq
 
 ### Upstream-Änderungen übernehmen
 
-Falls kocakli/Trello-Desktop-MCP relevante Updates bekommt:
-
 ```bash
-cd ~/.local/share/agital/trello-mcp  # oder der Windows-Pfad
+cd ~/.local/share/agital/trello-mcp
 
 # Upstream als Remote hinzufügen (einmalig)
 git remote add upstream https://github.com/kocakli/Trello-Desktop-MCP.git
 
-# Änderungen holen
 git fetch upstream
-
-# Selektiv mergen oder cherry-picken
 git diff upstream/main -- src/
 
-# Nach dem Merge: Patch erneut anwenden
-# macOS/Linux:
-bash scripts/apply-shortlink-patch.sh
-
-# Windows:
-# .\scripts\apply-shortlink-patch.ps1
+# Nach dem Merge: Prüfen ob shortLink-Patch noch vollständig ist
+grep -r "a-f0-9" src/
+# MUSS leer sein! Falls nicht, Patch erneut anwenden.
 
 npm run build
 ```
 
-### Board-Kontext manuell regenerieren
+### Neuen Release erstellen
 
 ```bash
-# macOS/Linux
-cd ~/.local/share/agital/trello-mcp
-TRELLO_API_KEY="key" TRELLO_TOKEN="token" bash scripts/generate-trello-context.sh
-git add trello-board-context.md
-git commit -m "chore: update board context"
-git push
-```
-
-Auf Windows: Entweder über Git Bash ausführen oder einfach `git pull` nach dem
-nächsten automatischen GitHub Action Run (jeden Montag 06:00 UTC).
-
-### Neuen Release erstellen (.mcpb)
-
-```bash
-# Version in package.json und manifest.json hochzählen, dann:
+# Version in package.json und manifest.json hochzählen
 git add -A
-git commit -m "release: v1.1.0"
-git tag v1.1.0
+git commit -m "release: vX.Y.Z"
+git tag vX.Y.Z
 git push && git push --tags
 # GitHub Action baut automatisch die .mcpb Datei
 ```
 
-Die .mcpb Datei erscheint dann unter
-[Releases](https://github.com/skagital/trello-mcp-agital/releases) auf GitHub.
-Danach im Claude Team-Plan Extension-Verzeichnis hochladen (nur Admins/Owners).
+Die `.mcpb` erscheint unter [Releases](https://github.com/skagital/trello-mcp-agital/releases).
+Für die Organisation: Admins laden die neue `.mcpb` im Claude Team Extension-Verzeichnis hoch.
+
+### Wichtige Regeln (siehe docs/LESSONS_LEARNED.md)
+
+- Kein manueller Initialize Handler im Server-Code
+- MCP SDK Version >= 1.27.1
+- `manifest_version: "0.3"` in manifest.json
+- `${__dirname}` in mcp_config.args
+- Immer `grep -r "a-f0-9" src/` vor dem Release (muss leer sein)
 
 ---
 
