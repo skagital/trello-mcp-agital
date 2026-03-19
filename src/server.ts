@@ -76,7 +76,7 @@ export function createMCPServer() {
   // Handle MCP initialization
   server.setRequestHandler(InitializeRequestSchema, async (_request) => {
     return {
-      protocolVersion: '2024-11-05',
+      protocolVersion: '2025-11-25',
       capabilities: {
         tools: {},
         resources: {},
