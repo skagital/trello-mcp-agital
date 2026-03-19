@@ -7,7 +7,7 @@ const validateGetListCards = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    listId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid list ID format'),
+    listId: z.string().min(1, 'Invalid list ID format'),
     filter: z.enum(['all', 'open', 'closed']).optional(),
     fields: z.array(z.string()).optional()
   });
@@ -20,7 +20,7 @@ const validateCreateList = (args: unknown) => {
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
     name: z.string().min(1, 'List name is required'),
-    idBoard: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid board ID format'),
+    idBoard: z.string().min(1, 'Invalid board ID format'),
     pos: z.union([z.number().min(0), z.enum(['top', 'bottom'])]).optional()
   });
   
@@ -31,7 +31,7 @@ const validateAddComment = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    cardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid card ID format'),
+    cardId: z.string().min(1, 'Invalid card ID format'),
     text: z.string().min(1, 'Comment text is required')
   });
   
@@ -55,7 +55,7 @@ export const trelloGetListCardsTool: Tool = {
       listId: {
         type: 'string',
         description: 'ID of the list to get cards from (you can get this from get_lists)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       filter: {
         type: 'string',
@@ -162,7 +162,7 @@ export const trelloCreateListTool: Tool = {
       idBoard: {
         type: 'string',
         description: 'ID of the board where the list will be created (you can get this from list_boards)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       pos: {
         oneOf: [
@@ -247,7 +247,7 @@ export const trelloAddCommentTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to add comment to (you can get this from board details or searches)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       text: {
         type: 'string',

@@ -34,7 +34,7 @@ export const createCardTool: Tool = {
       idList: {
         type: 'string',
         description: 'ID of the list where the card will be created (you can get this from get_lists)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       pos: {
         oneOf: [
@@ -52,7 +52,7 @@ export const createCardTool: Tool = {
         type: 'array',
         items: {
           type: 'string',
-          pattern: '^[a-f0-9]{24}$'
+          pattern: '^[a-zA-Z0-9]{1,24}$'
         },
         description: 'Optional array of member IDs to assign to the card'
       },
@@ -60,7 +60,7 @@ export const createCardTool: Tool = {
         type: 'array',
         items: {
           type: 'string',
-          pattern: '^[a-f0-9]{24}$'
+          pattern: '^[a-zA-Z0-9]{1,24}$'
         },
         description: 'Optional array of label IDs to categorize the card'
       }
@@ -148,7 +148,7 @@ export const updateCardTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to update (you can get this from board details or card searches)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       name: {
         type: 'string',
@@ -174,7 +174,7 @@ export const updateCardTool: Tool = {
       idList: {
         type: 'string',
         description: 'Move card to a different list by providing the list ID',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       pos: {
         oneOf: [
@@ -263,12 +263,12 @@ export const moveCardTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to move (you can get this from board details or card searches)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       idList: {
         type: 'string',
         description: 'ID of the destination list (you can get this from get_lists)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       pos: {
         oneOf: [
@@ -348,7 +348,7 @@ export const getCardTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to retrieve (you can get this from board details or searches)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       includeDetails: {
         type: 'boolean',
