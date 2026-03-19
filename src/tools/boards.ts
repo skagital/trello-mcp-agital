@@ -99,7 +99,7 @@ export const getBoardDetailsTool: Tool = {
       boardId: {
         type: 'string',
         description: 'The ID of the board to retrieve (you can get this from list_boards)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       includeDetails: {
         type: 'boolean',
@@ -200,7 +200,7 @@ export const getListsTool: Tool = {
       boardId: {
         type: 'string',
         description: 'The ID of the board to get lists from (you can get this from list_boards)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       filter: {
         type: 'string',

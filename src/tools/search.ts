@@ -9,7 +9,7 @@ const validateSearch = (args: unknown) => {
     token: z.string().min(1, 'Token is required'),
     query: z.string().min(1, 'Search query is required'),
     modelTypes: z.array(z.enum(['boards', 'cards', 'members', 'organizations'])).optional(),
-    boardIds: z.array(z.string().regex(/^[a-f0-9]{24}$/, 'Invalid board ID format')).optional(),
+    boardIds: z.array(z.string().min(1, 'Invalid board ID format')).optional(),
     boardsLimit: z.number().min(1).max(1000).optional(),
     cardsLimit: z.number().min(1).max(1000).optional(),
     membersLimit: z.number().min(1).max(1000).optional()
@@ -50,7 +50,7 @@ export const trelloSearchTool: Tool = {
         type: 'array',
         items: {
           type: 'string',
-          pattern: '^[a-f0-9]{24}$'
+          pattern: '^[a-zA-Z0-9]{1,24}$'
         },
         description: 'Optional: limit search to specific boards by their IDs'
       },

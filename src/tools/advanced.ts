@@ -7,7 +7,7 @@ const validateGetBoardCards = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    boardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid board ID format'),
+    boardId: z.string().min(1, 'Invalid board ID format'),
     attachments: z.string().optional(),
     members: z.string().optional(),
     filter: z.string().optional()
@@ -20,7 +20,7 @@ const validateGetCardActions = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    cardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid card ID format'),
+    cardId: z.string().min(1, 'Invalid card ID format'),
     filter: z.string().optional(),
     limit: z.number().min(1).max(1000).optional()
   });
@@ -32,7 +32,7 @@ const validateGetCardAttachments = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    cardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid card ID format'),
+    cardId: z.string().min(1, 'Invalid card ID format'),
     fields: z.array(z.string()).optional()
   });
   
@@ -43,7 +43,7 @@ const validateGetCardChecklists = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    cardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid card ID format'),
+    cardId: z.string().min(1, 'Invalid card ID format'),
     checkItems: z.string().optional(),
     fields: z.array(z.string()).optional()
   });
@@ -55,9 +55,9 @@ const validateGetBoardMembers = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    boardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid board ID format')
+    boardId: z.string().min(1, 'Invalid board ID format')
   });
-  
+
   return schema.parse(args);
 };
 
@@ -65,9 +65,9 @@ const validateGetBoardLabels = (args: unknown) => {
   const schema = z.object({
     apiKey: z.string().min(1, 'API key is required'),
     token: z.string().min(1, 'Token is required'),
-    boardId: z.string().regex(/^[a-f0-9]{24}$/, 'Invalid board ID format')
+    boardId: z.string().min(1, 'Invalid board ID format')
   });
-  
+
   return schema.parse(args);
 };
 
@@ -88,7 +88,7 @@ export const trelloGetBoardCardsTool: Tool = {
       boardId: {
         type: 'string',
         description: 'ID of the board to get cards from (you can get this from list_boards)',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       attachments: {
         type: 'string',
@@ -204,7 +204,7 @@ export const trelloGetCardActionsTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to get actions for',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       filter: {
         type: 'string',
@@ -307,7 +307,7 @@ export const trelloGetCardAttachmentsTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to get attachments for',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       fields: {
         type: 'array',
@@ -394,7 +394,7 @@ export const trelloGetCardChecklistsTool: Tool = {
       cardId: {
         type: 'string',
         description: 'ID of the card to get checklists for',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       },
       checkItems: {
         type: 'string',
@@ -486,7 +486,7 @@ export const trelloGetBoardMembersTool: Tool = {
       boardId: {
         type: 'string',
         description: 'ID of the board to get members for',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       }
     },
     required: ['apiKey', 'token', 'boardId']
@@ -560,7 +560,7 @@ export const trelloGetBoardLabelsTool: Tool = {
       boardId: {
         type: 'string',
         description: 'ID of the board to get labels for',
-        pattern: '^[a-f0-9]{24}$'
+        pattern: '^[a-zA-Z0-9]{1,24}$'
       }
     },
     required: ['apiKey', 'token', 'boardId']
