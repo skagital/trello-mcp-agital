@@ -1,0 +1,26 @@
+{
+  "name": "@agital/trello-mcp",
+  "version": "1.0.0",
+  "description": "Gepatchter Trello MCP Server für agital.online mit shortLink-Support",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "build:mcpb": "mcpb pack",
+    "generate-context": "bash scripts/generate-trello-context.sh"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "private": true
+}

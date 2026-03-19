@@ -1,0 +1,43 @@
+# .github/workflows/update-trello-context.yml
+# Aktualisiert die trello-board-context.md wöchentlich
+# Secrets benötigt: TRELLO_API_KEY, TRELLO_TOKEN
+
+name: Update Trello Board Context
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Jeden Montag um 06:00 UTC
+  workflow_dispatch:       # Manuell auslösbar
+
+permissions:
+  contents: write
+
+jobs:
+  update-context:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Trello context
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_BOARD_ID: '56a7e3b1ed97adbf2a2515d9'
+          OUTPUT_FILE: 'trello-board-context.md'
+        run: |
+          chmod +x ./scripts/generate-trello-context.sh
+          ./scripts/generate-trello-context.sh
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet trello-board-context.md || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add trello-board-context.md
+          git commit -m "chore: update trello board context [automated]"
+          git push

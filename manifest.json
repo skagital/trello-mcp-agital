@@ -1,0 +1,75 @@
+{
+  "mcpb_version": "0.3",
+  "name": "trello-agital",
+  "version": "1.0.0",
+  "description": "Trello MCP Server für agital.online — Product Backlog Management mit shortLink/URL Support",
+  "author": {
+    "name": "agital.online GmbH"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agital-online/trello-mcp.git"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "TRELLO_API_KEY": "${user_config.trello_api_key}",
+        "TRELLO_TOKEN": "${user_config.trello_token}"
+      }
+    }
+  },
+  "user_config": {
+    "trello_api_key": {
+      "type": "string",
+      "label": "Trello API Key",
+      "description": "Deinen API Key findest du auf https://trello.com/power-ups/admin",
+      "required": true,
+      "sensitive": true
+    },
+    "trello_token": {
+      "type": "string",
+      "label": "Trello Token",
+      "description": "Token generieren auf der API Key Seite (Scope: read/write, Expiration: never)",
+      "required": true,
+      "sensitive": true
+    }
+  },
+  "tools": [
+    {
+      "name": "get_card",
+      "description": "Karte per ID, shortLink oder URL abrufen"
+    },
+    {
+      "name": "create_card",
+      "description": "Neue Karte erstellen"
+    },
+    {
+      "name": "update_card",
+      "description": "Karte bearbeiten"
+    },
+    {
+      "name": "move_card",
+      "description": "Karte in andere Spalte verschieben"
+    },
+    {
+      "name": "trello_search",
+      "description": "Suche über alle Boards und Karten"
+    },
+    {
+      "name": "get_board_details",
+      "description": "Board-Details abrufen"
+    },
+    {
+      "name": "trello_get_list_cards",
+      "description": "Alle Karten einer Liste abrufen"
+    },
+    {
+      "name": "trello_add_comment",
+      "description": "Kommentar zu einer Karte hinzufügen"
+    }
+  ]
+}
