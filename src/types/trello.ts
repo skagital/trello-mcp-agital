@@ -145,6 +145,33 @@ export interface MoveCardRequest {
   pos?: number | string | undefined;
 }
 
+export interface CreateChecklistRequest {
+  name: string;
+  pos?: string | number | undefined;
+}
+
+export interface AddChecklistItemRequest {
+  name: string;
+  pos?: string | number | undefined;
+  checked?: boolean | undefined;
+  due?: string | undefined;
+  idMember?: string | undefined;
+}
+
+export interface UpdateChecklistItemRequest {
+  name?: string | undefined;
+  state?: 'complete' | 'incomplete' | undefined;
+  pos?: string | number | undefined;
+  due?: string | undefined;
+  idMember?: string | undefined;
+}
+
+export interface AddAttachmentUrlRequest {
+  url: string;
+  name?: string | undefined;
+  setCover?: boolean | undefined;
+}
+
 export interface TrelloError {
   message: string;
   error?: string;

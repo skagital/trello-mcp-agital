@@ -55,6 +55,8 @@ Nutzung: In der `CLAUDE.md` deines Projekts referenzieren oder als Project Knowl
 | "Zeig mir meine PBIs" | Sucht via `@me` nach zugewiesenen Karten |
 | "Was liegt in 'Zu priorisierende Projekte'?" | Listet alle Karten der Spalte |
 | "Verschiebe Karte X nach 'In Code Review'" | Verschiebt per Listen-ID aus Kontext |
+| "Erstelle eine Checklist 'Akzeptanzkriterien' auf Karte X" | Legt Checklist an |
+| "Häng den Screenshot C:/Users/.../bug.png an Karte X" | Lädt Datei als Attachment hoch |
 
 ## Architektur
 
@@ -68,7 +70,9 @@ trello-mcp-agital/
 │   │   ├── lists.ts               # get_list_cards, create_list, add_comment
 │   │   ├── search.ts              # trello_search
 │   │   ├── members.ts             # get_user_boards, get_member
-│   │   └── advanced.ts            # board_cards, card_actions, attachments, checklists
+│   │   ├── advanced.ts            # board_cards, card_actions, attachments, checklists (read)
+│   │   ├── checklists.ts          # create_checklist, add/update/delete checklist items
+│   │   └── attachments.ts         # add_attachment_url, add_attachment_file, delete_attachment
 │   ├── trello/client.ts           # Trello API Client mit Retry-Logik
 │   └── utils/validation.ts        # Zod-Validierung (gepatcht: akzeptiert shortLinks)
 ├── dist/                           # Kompiliertes JavaScript (ESM)

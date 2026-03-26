@@ -280,6 +280,27 @@ Füge einen Kommentar zu Karte 6DOiJhV0 hinzu:
 "PR ist erstellt, wartet auf Review von @bg_esy"
 ```
 
+### Checklist anlegen (z.B. Akzeptanzkriterien)
+
+```
+Erstelle eine Checklist "Akzeptanzkriterien" auf Karte 6DOiJhV0 mit folgenden Punkten:
+- z-Index der Tooltip-Box korrigiert
+- Positionierung entspricht dem Design
+- Kein visueller Seiteneffekt
+```
+
+### Datei an Karte anhängen
+
+```
+Lade den Screenshot C:/Users/sk/Desktop/bug-screenshot.png auf Karte 6DOiJhV0 hoch
+```
+
+### URL an Karte anhängen
+
+```
+Häng den Figma-Link https://figma.com/file/abc123 an Karte 6DOiJhV0
+```
+
 ### Spalte auflisten
 
 ```
@@ -313,6 +334,14 @@ Suche nach "responsive" im Product Backlog
 | `trello_get_card_actions` | Aktivitätsverlauf | "Was ist auf Karte X passiert?" |
 | `trello_get_card_attachments` | Anhänge einer Karte | "Welche Anhänge hat Karte X?" |
 | `trello_get_card_checklists` | Checklisten einer Karte | "Zeig mir die Checkliste von X" |
+| `trello_create_checklist` | Checklist auf einer Karte anlegen | "Erstelle eine Checklist 'Akzeptanzkriterien'" |
+| `trello_add_checklist_item` | Item zu einer Checklist hinzufügen | "Füge 'z-Index korrigiert' zur Checklist hinzu" |
+| `trello_update_checklist_item` | Checklist-Item bearbeiten oder abhaken | "Hake 'z-Index korrigiert' ab" |
+| `trello_delete_checklist_item` | Checklist-Item löschen | "Lösche das Item aus der Checklist" |
+| `trello_delete_checklist` | Ganze Checklist löschen | "Lösche die Checklist 'Alt'" |
+| `trello_add_attachment_url` | URL als Anhang hinzufügen | "Häng den Link an Karte X" |
+| `trello_add_attachment_file` | Datei an Karte anhängen | "Lade screenshot.png auf Karte X hoch" |
+| `trello_delete_attachment` | Anhang entfernen | "Lösche den Anhang von Karte X" |
 
 ---
 

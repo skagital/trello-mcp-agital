@@ -1,13 +1,21 @@
 import { logger } from '../utils/logger.js';
 import { insights } from '../utils/appInsights.js';
-import type { 
-  TrelloCredentials, 
-  TrelloBoard, 
-  TrelloList, 
-  TrelloCard, 
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import type {
+  TrelloCredentials,
+  TrelloBoard,
+  TrelloList,
+  TrelloCard,
+  TrelloChecklist,
+  TrelloAttachment,
   CreateCardRequest,
   UpdateCardRequest,
   MoveCardRequest,
+  CreateChecklistRequest,
+  AddChecklistItemRequest,
+  UpdateChecklistItemRequest,
+  AddAttachmentUrlRequest,
   TrelloError,
   RateLimitInfo,
   TrelloApiResponse
@@ -569,18 +577,152 @@ export class TrelloClient {
     fields?: string[];
   }): Promise<TrelloApiResponse<any[]>> {
     const params: Record<string, string> = {};
-    
+
     if (options?.checkItems) {
       params.checkItems = options.checkItems;
     }
     if (options?.fields) {
       params.fields = options.fields.join(',');
     }
-    
+
     return this.makeRequest<any[]>(
       `/cards/${cardId}/checklists`,
       { params },
       `Get checklists for card ${cardId}`
+    );
+  }
+
+  // ── Checklist Write Operations ──────────────────────────────────────
+
+  async createChecklist(cardId: string, data: CreateChecklistRequest): Promise<TrelloApiResponse<TrelloChecklist>> {
+    return this.makeRequest<TrelloChecklist>(
+      `/cards/${cardId}/checklists`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ name: data.name, ...(data.pos !== undefined && { pos: data.pos }) })
+      },
+      `Create checklist "${data.name}" on card ${cardId}`
+    );
+  }
+
+  async deleteChecklist(checklistId: string): Promise<TrelloApiResponse<void>> {
+    return this.makeRequest<void>(
+      `/checklists/${checklistId}`,
+      { method: 'DELETE' },
+      `Delete checklist ${checklistId}`
+    );
+  }
+
+  async addChecklistItem(checklistId: string, data: AddChecklistItemRequest): Promise<TrelloApiResponse<any>> {
+    const body: Record<string, unknown> = { name: data.name };
+    if (data.pos !== undefined) body.pos = data.pos;
+    if (data.checked !== undefined) body.checked = data.checked;
+    if (data.due) body.due = data.due;
+    if (data.idMember) body.idMember = data.idMember;
+
+    return this.makeRequest<any>(
+      `/checklists/${checklistId}/checkItems`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body)
+      },
+      `Add checklist item "${data.name}" to checklist ${checklistId}`
+    );
+  }
+
+  async updateChecklistItem(cardId: string, checkItemId: string, data: UpdateChecklistItemRequest): Promise<TrelloApiResponse<any>> {
+    const body: Record<string, unknown> = {};
+    if (data.name !== undefined) body.name = data.name;
+    if (data.state !== undefined) body.state = data.state;
+    if (data.pos !== undefined) body.pos = data.pos;
+    if (data.due !== undefined) body.due = data.due;
+    if (data.idMember !== undefined) body.idMember = data.idMember;
+
+    return this.makeRequest<any>(
+      `/cards/${cardId}/checkItem/${checkItemId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      },
+      `Update checklist item ${checkItemId} on card ${cardId}`
+    );
+  }
+
+  async deleteChecklistItem(checklistId: string, checkItemId: string): Promise<TrelloApiResponse<void>> {
+    return this.makeRequest<void>(
+      `/checklists/${checklistId}/checkItems/${checkItemId}`,
+      { method: 'DELETE' },
+      `Delete checklist item ${checkItemId} from checklist ${checklistId}`
+    );
+  }
+
+  // ── Attachment Operations ───────────────────────────────────────────
+
+  async addAttachmentUrl(cardId: string, data: AddAttachmentUrlRequest): Promise<TrelloApiResponse<TrelloAttachment>> {
+    const body: Record<string, unknown> = { url: data.url };
+    if (data.name) body.name = data.name;
+    if (data.setCover !== undefined) body.setCover = data.setCover;
+
+    return this.makeRequest<TrelloAttachment>(
+      `/cards/${cardId}/attachments`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body)
+      },
+      `Add URL attachment to card ${cardId}`
+    );
+  }
+
+  async addAttachmentFile(cardId: string, filePath: string, name?: string): Promise<TrelloApiResponse<TrelloAttachment>> {
+    const url = this.buildURL(`/cards/${cardId}/attachments`);
+    const startTime = Date.now();
+
+    try {
+      const fileBuffer = await fs.readFile(filePath);
+      const fileName = name || path.basename(filePath);
+
+      const formData = new FormData();
+      formData.append('file', new Blob([fileBuffer]), fileName);
+      if (name) formData.append('name', name);
+
+      const response = await this.fetchWithTimeout(url, {
+        method: 'POST',
+        body: formData as any,
+        // No Content-Type header – FormData sets it automatically with boundary
+      });
+
+      const rateLimit = this.extractRateLimitInfo(response);
+      const duration = Date.now() - startTime;
+
+      if (!response.ok) {
+        throw response;
+      }
+
+      const data = await response.json() as TrelloAttachment;
+
+      logger.info(`Trello API upload attachment successful`, {
+        status: response.status,
+        duration: `${duration}ms`,
+        rateLimit
+      });
+
+      return { data, rateLimit };
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      const trelloError = this.handleError(error);
+      logger.error(`Trello API upload attachment failed`, {
+        error: trelloError.message,
+        duration: `${duration}ms`
+      });
+      throw trelloError;
+    }
+  }
+
+  async deleteAttachment(cardId: string, attachmentId: string): Promise<TrelloApiResponse<void>> {
+    return this.makeRequest<void>(
+      `/cards/${cardId}/attachments/${attachmentId}`,
+      { method: 'DELETE' },
+      `Delete attachment ${attachmentId} from card ${cardId}`
     );
   }
 }

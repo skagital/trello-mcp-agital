@@ -46,6 +46,20 @@ import {
   trelloGetBoardLabelsTool, handleTrelloGetBoardLabels
 } from './tools/advanced.js';
 
+import {
+  trelloCreateChecklistTool, handleTrelloCreateChecklist,
+  trelloAddChecklistItemTool, handleTrelloAddChecklistItem,
+  trelloUpdateChecklistItemTool, handleTrelloUpdateChecklistItem,
+  trelloDeleteChecklistItemTool, handleTrelloDeleteChecklistItem,
+  trelloDeleteChecklistTool, handleTrelloDeleteChecklist
+} from './tools/checklists.js';
+
+import {
+  trelloAddAttachmentUrlTool, handleTrelloAddAttachmentUrl,
+  trelloAddAttachmentFileTool, handleTrelloAddAttachmentFile,
+  trelloDeleteAttachmentTool, handleTrelloDeleteAttachment
+} from './tools/attachments.js';
+
 const server = new Server(
   {
     name: 'trello-agital',
@@ -67,7 +81,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       listBoardsTool, getListsTool, trelloGetMemberTool,
       trelloGetBoardCardsTool, trelloGetCardActionsTool,
       trelloGetCardAttachmentsTool, trelloGetCardChecklistsTool,
-      trelloGetBoardMembersTool, trelloGetBoardLabelsTool
+      trelloGetBoardMembersTool, trelloGetBoardLabelsTool,
+      // Checklist write operations
+      trelloCreateChecklistTool, trelloAddChecklistItemTool,
+      trelloUpdateChecklistItemTool, trelloDeleteChecklistItemTool,
+      trelloDeleteChecklistTool,
+      // Attachment write operations
+      trelloAddAttachmentUrlTool, trelloAddAttachmentFileTool,
+      trelloDeleteAttachmentTool
     ]
   };
 });
@@ -96,6 +117,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     case 'trello_get_card_checklists': return await handleTrelloGetCardChecklists(argsWithCredentials);
     case 'trello_get_board_members': return await handleTrelloGetBoardMembers(argsWithCredentials);
     case 'trello_get_board_labels': return await handleTrelloGetBoardLabels(argsWithCredentials);
+    // Checklist write operations
+    case 'trello_create_checklist': return await handleTrelloCreateChecklist(argsWithCredentials);
+    case 'trello_add_checklist_item': return await handleTrelloAddChecklistItem(argsWithCredentials);
+    case 'trello_update_checklist_item': return await handleTrelloUpdateChecklistItem(argsWithCredentials);
+    case 'trello_delete_checklist_item': return await handleTrelloDeleteChecklistItem(argsWithCredentials);
+    case 'trello_delete_checklist': return await handleTrelloDeleteChecklist(argsWithCredentials);
+    // Attachment write operations
+    case 'trello_add_attachment_url': return await handleTrelloAddAttachmentUrl(argsWithCredentials);
+    case 'trello_add_attachment_file': return await handleTrelloAddAttachmentFile(argsWithCredentials);
+    case 'trello_delete_attachment': return await handleTrelloDeleteAttachment(argsWithCredentials);
     default: throw new Error(`Unknown tool: ${name}`);
   }
 });

@@ -112,6 +112,112 @@ export function validateDeleteCard(data: unknown) {
   return deleteCardSchema.parse(data);
 }
 
+// ── Checklist Schemas ──────────────────────────────────────────────
+
+export const createChecklistSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  name: z.string().min(1, 'Checklist name is required').max(16384, 'Checklist name too long'),
+  pos: z.union([z.number().min(0), z.enum(['top', 'bottom'])]).optional()
+});
+
+export const addChecklistItemSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  checklistId: trelloIdSchema,
+  name: z.string().min(1, 'Item name is required').max(16384, 'Item name too long'),
+  pos: z.union([z.number().min(0), z.enum(['top', 'bottom'])]).optional(),
+  checked: z.boolean().optional(),
+  due: z.string().optional(),
+  idMember: trelloIdOptionalSchema
+});
+
+export const updateChecklistItemSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  checkItemId: trelloIdSchema,
+  name: z.string().min(1).max(16384).optional(),
+  state: z.enum(['complete', 'incomplete']).optional(),
+  pos: z.union([z.number().min(0), z.enum(['top', 'bottom'])]).optional(),
+  due: z.string().optional(),
+  idMember: trelloIdOptionalSchema
+});
+
+export const deleteChecklistItemSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  checklistId: trelloIdSchema,
+  checkItemId: trelloIdSchema
+});
+
+export const deleteChecklistSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  checklistId: trelloIdSchema
+});
+
+// ── Attachment Schemas ─────────────────────────────────────────────
+
+export const addAttachmentUrlSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  url: z.string().url('A valid URL is required'),
+  name: z.string().max(256).optional(),
+  setCover: z.boolean().optional()
+});
+
+export const addAttachmentFileSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  filePath: z.string().min(1, 'File path is required'),
+  name: z.string().max(256).optional()
+});
+
+export const deleteAttachmentSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  attachmentId: trelloIdSchema
+});
+
+// ── Validation Functions ───────────────────────────────────────────
+
+export function validateCreateChecklist(data: unknown) {
+  return createChecklistSchema.parse(data);
+}
+
+export function validateAddChecklistItem(data: unknown) {
+  return addChecklistItemSchema.parse(data);
+}
+
+export function validateUpdateChecklistItem(data: unknown) {
+  return updateChecklistItemSchema.parse(data);
+}
+
+export function validateDeleteChecklistItem(data: unknown) {
+  return deleteChecklistItemSchema.parse(data);
+}
+
+export function validateDeleteChecklist(data: unknown) {
+  return deleteChecklistSchema.parse(data);
+}
+
+export function validateAddAttachmentUrl(data: unknown) {
+  return addAttachmentUrlSchema.parse(data);
+}
+
+export function validateAddAttachmentFile(data: unknown) {
+  return addAttachmentFileSchema.parse(data);
+}
+
+export function validateDeleteAttachment(data: unknown) {
+  return deleteAttachmentSchema.parse(data);
+}
+
 export function formatValidationError(error: z.ZodError): string {
   const issues = error.issues.map(issue => {
     const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
