@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "trello-agital",
   "display_name": "Trello agital.online",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Trello MCP Server fuer agital.online mit shortLink/URL Support",
   "author": {
     "name": "agital.online GmbH"
@@ -42,6 +42,14 @@
     {"name": "move_card", "description": "Karte verschieben"},
     {"name": "trello_search", "description": "Suche ueber Boards und Karten"},
     {"name": "trello_get_list_cards", "description": "Karten einer Liste abrufen"},
-    {"name": "trello_add_comment", "description": "Kommentar hinzufuegen"}
+    {"name": "trello_add_comment", "description": "Kommentar hinzufuegen"},
+    {"name": "trello_create_checklist", "description": "Checklist auf Karte anlegen"},
+    {"name": "trello_add_checklist_item", "description": "Item zu Checklist hinzufuegen"},
+    {"name": "trello_update_checklist_item", "description": "Checklist-Item bearbeiten oder abhaken"},
+    {"name": "trello_delete_checklist_item", "description": "Checklist-Item loeschen"},
+    {"name": "trello_delete_checklist", "description": "Ganze Checklist loeschen"},
+    {"name": "trello_add_attachment_url", "description": "URL als Anhang hinzufuegen"},
+    {"name": "trello_add_attachment_file", "description": "Datei an Karte hochladen"},
+    {"name": "trello_delete_attachment", "description": "Anhang entfernen"}
   ]
 }
