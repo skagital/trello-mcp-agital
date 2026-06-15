@@ -1,5 +1,5 @@
 # Trello Board Context: Product Backlog
-<!-- Auto-generated: 2026-06-08 10:47 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
+<!-- Auto-generated: 2026-06-15 11:58 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
 <!-- URL: https://trello.com/b/z4uNiV0v/product-backlog -->
 <!-- Dieses File wird automatisch generiert. Nicht manuell editieren. -->
 
@@ -27,12 +27,12 @@ Nutze diese IDs direkt bei Trello MCP Calls, ohne vorher das Board abzufragen.
 | blinkerbox | 652fc694efec205c38b84485 | green_dark |
 | UBO | 66015edff61ca9765af5e65d | sky |
 | Dev Ready | 5947bfeeced82109ff1bd603 | lime_light |
-| QS erfolgreich | 63c12e70efafa201dc7b7669 | green_light |
 | SEO | 6699020fbb6ea1a9617dee3b | lime |
+| QS erfolgreich | 63c12e70efafa201dc7b7669 | green_light |
 | Refinement | 5947bff7ced82109ff1bd614 | orange_light |
 | FE Polish | 65e986a1d1990242a1004adc | orange |
-| On hold | 5d78f4e7be48cb0df554e554 | red_light |
 | Händlerbereich | 69788a9b698c96279b38b954 | blue |
+| On hold | 5d78f4e7be48cb0df554e554 | red_light |
 | Rework necessary | 65538e18b52f52938357f1ca | pink_light |
 | GuideLite | 63c11d14e7e970014c91ced2 | purple_dark |
 
