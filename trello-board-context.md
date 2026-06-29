@@ -1,5 +1,5 @@
 # Trello Board Context: Product Backlog
-<!-- Auto-generated: 2026-06-22 11:48 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
+<!-- Auto-generated: 2026-06-29 10:52 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
 <!-- URL: https://trello.com/b/z4uNiV0v/product-backlog -->
 <!-- Dieses File wird automatisch generiert. Nicht manuell editieren. -->
 
@@ -51,7 +51,6 @@ Nutze diese IDs direkt bei Trello MCP Calls, ohne vorher das Board abzufragen.
 | Service Worker | 69bbd336873403c44fa922d7 | @serviceworker2 |
 | Sören Kann | 6582be4ce3ffa10398fd7189 | @sk_esy |
 | Tobias Ossig | 57f51fb2ebaac835f466735d | @to_esy |
-| Vin Hegewald | 64c0da24c5e4fb013a27a74c | @vh_esy |
 | Yevhen Bardyk | 69b280493974b6584c861603 | @yb_esy |
 
 ## Häufige Befehle (Referenz)
