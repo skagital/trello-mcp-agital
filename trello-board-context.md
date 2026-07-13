@@ -1,5 +1,5 @@
 # Trello Board Context: Product Backlog
-<!-- Auto-generated: 2026-07-06 10:13 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
+<!-- Auto-generated: 2026-07-13 09:20 UTC | Board-ID: 56a7e3b1ed97adbf2a2515d9 -->
 <!-- URL: https://trello.com/b/z4uNiV0v/product-backlog -->
 <!-- Dieses File wird automatisch generiert. Nicht manuell editieren. -->
 
@@ -22,8 +22,8 @@ Nutze diese IDs direkt bei Trello MCP Calls, ohne vorher das Board abzufragen.
 
 | Label | ID | Farbe |
 |---|---|---|
-| pedali | 63c129acbad06a0184aa7ac0 | blue_dark |
 | esyoil | 63c11d455241bf0114763b7b | yellow |
+| pedali | 63c129acbad06a0184aa7ac0 | blue_dark |
 | blinkerbox | 652fc694efec205c38b84485 | green_dark |
 | UBO | 66015edff61ca9765af5e65d | sky |
 | Dev Ready | 5947bfeeced82109ff1bd603 | lime_light |
