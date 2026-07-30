@@ -60,10 +60,20 @@ import {
   trelloDeleteAttachmentTool, handleTrelloDeleteAttachment
 } from './tools/attachments.js';
 
+import {
+  trelloAddCardLabelTool, handleTrelloAddCardLabel,
+  trelloRemoveCardLabelTool, handleTrelloRemoveCardLabel
+} from './tools/labels.js';
+
+import {
+  trelloUpdateCommentTool, handleTrelloUpdateComment,
+  trelloDeleteCommentTool, handleTrelloDeleteComment
+} from './tools/comments.js';
+
 const server = new Server(
   {
     name: 'trello-agital',
-    version: '1.2.0',
+    version: '1.5.0',
   },
   {
     capabilities: {
@@ -88,7 +98,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       trelloDeleteChecklistTool,
       // Attachment write operations
       trelloAddAttachmentUrlTool, trelloAddAttachmentFileTool,
-      trelloDeleteAttachmentTool
+      trelloDeleteAttachmentTool,
+      // Label write operations
+      trelloAddCardLabelTool, trelloRemoveCardLabelTool,
+      // Comment write operations
+      trelloUpdateCommentTool, trelloDeleteCommentTool
     ]
   };
 });
@@ -127,6 +141,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     case 'trello_add_attachment_url': return await handleTrelloAddAttachmentUrl(argsWithCredentials);
     case 'trello_add_attachment_file': return await handleTrelloAddAttachmentFile(argsWithCredentials);
     case 'trello_delete_attachment': return await handleTrelloDeleteAttachment(argsWithCredentials);
+    // Label write operations
+    case 'trello_add_card_label': return await handleTrelloAddCardLabel(argsWithCredentials);
+    case 'trello_remove_card_label': return await handleTrelloRemoveCardLabel(argsWithCredentials);
+    // Comment write operations
+    case 'trello_update_comment': return await handleTrelloUpdateComment(argsWithCredentials);
+    case 'trello_delete_comment': return await handleTrelloDeleteComment(argsWithCredentials);
     default: throw new Error(`Unknown tool: ${name}`);
   }
 });

@@ -76,6 +76,35 @@ export const deleteCardSchema = z.object({
   cardId: trelloIdSchema
 });
 
+export const addCardLabelSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  labelId: trelloIdSchema
+});
+
+export const updateCommentSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  commentId: trelloIdSchema,
+  text: z.string().min(1, 'Comment text is required')
+});
+
+export const deleteCommentSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  commentId: trelloIdSchema
+});
+
+export const removeCardLabelSchema = z.object({
+  apiKey: z.string().min(1, 'API key is required'),
+  token: z.string().min(1, 'Token is required'),
+  cardId: trelloIdSchema,
+  labelId: trelloIdSchema
+});
+
 export function validateCredentials(data: unknown) {
   return credentialsSchema.parse(data);
 }
@@ -110,6 +139,22 @@ export function validateGetCard(data: unknown) {
 
 export function validateDeleteCard(data: unknown) {
   return deleteCardSchema.parse(data);
+}
+
+export function validateAddCardLabel(data: unknown) {
+  return addCardLabelSchema.parse(data);
+}
+
+export function validateRemoveCardLabel(data: unknown) {
+  return removeCardLabelSchema.parse(data);
+}
+
+export function validateUpdateComment(data: unknown) {
+  return updateCommentSchema.parse(data);
+}
+
+export function validateDeleteComment(data: unknown) {
+  return deleteCommentSchema.parse(data);
 }
 
 // ── Checklist Schemas ──────────────────────────────────────────────

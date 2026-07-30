@@ -384,6 +384,27 @@ export class TrelloClient {
     );
   }
 
+  // Adds a single label without touching the card's other labels.
+  async addCardLabel(cardId: string, idLabel: string): Promise<TrelloApiResponse<string[]>> {
+    return this.makeRequest<string[]>(
+      `/cards/${cardId}/idLabels`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ value: idLabel })
+      },
+      `Add label ${idLabel} to card ${cardId}`
+    );
+  }
+
+  // Removes a single label; Trello treats this as idempotent (no error if absent).
+  async removeCardLabel(cardId: string, idLabel: string): Promise<TrelloApiResponse<void>> {
+    return this.makeRequest<void>(
+      `/cards/${cardId}/idLabels/${idLabel}`,
+      { method: 'DELETE' },
+      `Remove label ${idLabel} from card ${cardId}`
+    );
+  }
+
   async getBoardMembers(boardId: string): Promise<TrelloApiResponse<any[]>> {
     return this.makeRequest<any[]>(
       `/boards/${boardId}/members`,
@@ -462,6 +483,27 @@ export class TrelloClient {
         body: JSON.stringify({ text })
       },
       `Add comment to card ${cardId}`
+    );
+  }
+
+  // Trello models comments as actions; editing one addresses the action under its card.
+  // The action-comment endpoint takes `text` as a query parameter, not as a JSON body.
+  async updateCardComment(cardId: string, commentId: string, text: string): Promise<TrelloApiResponse<any>> {
+    return this.makeRequest<any>(
+      `/cards/${cardId}/actions/${commentId}/comments`,
+      {
+        method: 'PUT',
+        params: { text }
+      },
+      `Update comment ${commentId} on card ${cardId}`
+    );
+  }
+
+  async deleteCardComment(cardId: string, commentId: string): Promise<TrelloApiResponse<void>> {
+    return this.makeRequest<void>(
+      `/cards/${cardId}/actions/${commentId}/comments`,
+      { method: 'DELETE' },
+      `Delete comment ${commentId} on card ${cardId}`
     );
   }
 

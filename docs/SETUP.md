@@ -324,6 +324,8 @@ Suche nach "responsive" im Product Backlog
 | `update_card` | Karte bearbeiten | "Ändere die Beschreibung von..." |
 | `move_card` | Karte in andere Spalte verschieben | "Verschiebe Karte X nach Y" |
 | `trello_add_comment` | Kommentar hinzufügen | "Kommentiere auf Karte X..." |
+| `trello_update_comment` | Kommentartext ersetzen | "Korrigiere meinen Kommentar auf Karte X" |
+| `trello_delete_comment` | Kommentar löschen | "Lösch meinen Kommentar auf Karte X" |
 | `trello_search` | Volltextsuche | "Suche nach..." |
 | `trello_get_list_cards` | Karten einer Spalte auflisten | "Was liegt in Working?" |
 | `get_board_details` | Board-Struktur anzeigen | "Zeig mir das Board" |

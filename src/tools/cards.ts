@@ -182,6 +182,22 @@ export const updateCardTool: Tool = {
           { type: 'string', enum: ['top', 'bottom'] }
         ],
         description: 'Change position in the list: "top", "bottom", or specific number'
+      },
+      idMembers: {
+        type: 'array',
+        items: {
+          type: 'string',
+          pattern: '^[a-zA-Z0-9]{1,24}$'
+        },
+        description: 'Array of member IDs to assign to the card. NOTE: this REPLACES the full member list; to add/remove individual members read the card first and pass the merged list.'
+      },
+      idLabels: {
+        type: 'array',
+        items: {
+          type: 'string',
+          pattern: '^[a-zA-Z0-9]{1,24}$'
+        },
+        description: 'Array of label IDs for the card. NOTE: this REPLACES all labels on the card. To add or remove a single label without touching the others, use trello_add_card_label / trello_remove_card_label instead.'
       }
     },
     required: ['apiKey', 'token', 'cardId']
