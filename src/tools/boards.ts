@@ -1,11 +1,10 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { z } from 'zod';
 import { TrelloClient } from '../trello/client.js';
+import { extractErrorMessage } from '../utils/errors.js';
 import { 
   validateListBoards, 
   validateGetBoard, 
-  validateGetBoardLists, 
-  formatValidationError 
+  validateGetBoardLists 
 } from '../utils/validation.js';
 
 export const listBoardsTool: Tool = {
@@ -64,11 +63,7 @@ export async function handleListBoards(args: unknown) {
       ]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError 
-      ? formatValidationError(error)
-      : error instanceof Error 
-        ? error.message 
-        : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
         
     return {
       content: [
@@ -165,11 +160,7 @@ export async function handleGetBoardDetails(args: unknown) {
       ]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError 
-      ? formatValidationError(error)
-      : error instanceof Error 
-        ? error.message 
-        : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
         
     return {
       content: [
@@ -243,11 +234,7 @@ export async function handleGetLists(args: unknown) {
       ]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError 
-      ? formatValidationError(error)
-      : error instanceof Error 
-        ? error.message 
-        : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
         
     return {
       content: [

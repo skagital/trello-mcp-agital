@@ -1,11 +1,10 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { z } from 'zod';
 import { TrelloClient } from '../trello/client.js';
+import { extractErrorMessage } from '../utils/errors.js';
 import {
   validateAddAttachmentUrl,
   validateAddAttachmentFile,
-  validateDeleteAttachment,
-  formatValidationError
+  validateDeleteAttachment
 } from '../utils/validation.js';
 
 // ── Add Attachment (URL) ───────────────────────────────────────────
@@ -74,9 +73,7 @@ export async function handleTrelloAddAttachmentUrl(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error adding URL attachment: ${errorMessage}` }],
@@ -147,9 +144,7 @@ export async function handleTrelloAddAttachmentFile(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error uploading file attachment: ${errorMessage}` }],
@@ -205,9 +200,7 @@ export async function handleTrelloDeleteAttachment(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error deleting attachment: ${errorMessage}` }],

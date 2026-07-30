@@ -1,10 +1,9 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { z } from 'zod';
 import { TrelloClient } from '../trello/client.js';
+import { extractErrorMessage } from '../utils/errors.js';
 import {
   validateAddCardLabel,
-  validateRemoveCardLabel,
-  formatValidationError
+  validateRemoveCardLabel
 } from '../utils/validation.js';
 
 const labelIdProperties = {
@@ -33,11 +32,7 @@ function mapLabels(labels: { id: string; name: string; color: string }[] | undef
 }
 
 function errorResult(action: string, error: unknown) {
-  const errorMessage = error instanceof z.ZodError
-    ? formatValidationError(error)
-    : error instanceof Error
-      ? error.message
-      : 'Unknown error occurred';
+  const errorMessage = extractErrorMessage(error);
 
   return {
     content: [

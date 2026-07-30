@@ -1,13 +1,12 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { z } from 'zod';
 import { TrelloClient } from '../trello/client.js';
+import { extractErrorMessage } from '../utils/errors.js';
 import {
   validateCreateChecklist,
   validateAddChecklistItem,
   validateUpdateChecklistItem,
   validateDeleteChecklistItem,
-  validateDeleteChecklist,
-  formatValidationError
+  validateDeleteChecklist
 } from '../utils/validation.js';
 
 // ── Create Checklist ───────────────────────────────────────────────
@@ -73,9 +72,7 @@ export async function handleTrelloCreateChecklist(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error creating checklist: ${errorMessage}` }],
@@ -160,9 +157,7 @@ export async function handleTrelloAddChecklistItem(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error adding checklist item: ${errorMessage}` }],
@@ -252,9 +247,7 @@ export async function handleTrelloUpdateChecklistItem(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error updating checklist item: ${errorMessage}` }],
@@ -310,9 +303,7 @@ export async function handleTrelloDeleteChecklistItem(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error deleting checklist item: ${errorMessage}` }],
@@ -363,9 +354,7 @@ export async function handleTrelloDeleteChecklist(args: unknown) {
       content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }]
     };
   } catch (error) {
-    const errorMessage = error instanceof z.ZodError
-      ? formatValidationError(error)
-      : error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = extractErrorMessage(error);
 
     return {
       content: [{ type: 'text' as const, text: `Error deleting checklist: ${errorMessage}` }],

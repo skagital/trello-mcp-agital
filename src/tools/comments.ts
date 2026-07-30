@@ -1,10 +1,9 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { z } from 'zod';
 import { TrelloClient } from '../trello/client.js';
+import { extractErrorMessage } from '../utils/errors.js';
 import {
   validateUpdateComment,
-  validateDeleteComment,
-  formatValidationError
+  validateDeleteComment
 } from '../utils/validation.js';
 
 const commentIdProperties = {
@@ -27,27 +26,6 @@ const commentIdProperties = {
     pattern: '^[a-zA-Z0-9]{1,24}$'
   }
 } as const;
-
-// The Trello client rejects with a plain object ({ message, status, code }), not an Error
-// instance, so an `instanceof Error` check alone would swallow every HTTP failure.
-function extractErrorMessage(error: unknown): string {
-  if (error instanceof z.ZodError) {
-    return formatValidationError(error);
-  }
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (typeof error === 'object' && error !== null) {
-    const candidate = error as { message?: unknown; status?: unknown; code?: unknown };
-    if (typeof candidate.message === 'string') {
-      const status = typeof candidate.status === 'number' ? ` (HTTP ${candidate.status})` : '';
-      const code = typeof candidate.code === 'string' ? ` [${candidate.code}]` : '';
-      return `${candidate.message}${status}${code}`;
-    }
-    return JSON.stringify(error);
-  }
-  return 'Unknown error occurred';
-}
 
 function errorResult(action: string, error: unknown) {
   const errorMessage = extractErrorMessage(error);
