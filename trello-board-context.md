@@ -12,6 +12,7 @@ Nutze diese IDs direkt bei Trello MCP Calls, ohne vorher das Board abzufragen.
 |---|---|
 | In Vorbereitung | 652d14fee05c5d3cabf43f57 |
 | Zu priorisierende Projekte (sortiert nach Prio) | 57bd9e584e8ae054d7863a96 |
+| Priorisierte Projekte (sortiert nach Prio) | 6af5ce918b1e5e2c0803ee64 |
 | Working (max. 2 PBIs / Dev) | 5ab36f9f27c9fcfb74c33e22 |
 | In Code Review | 674067d8a9a0dbe6a27dbc7d |
 | QS Staging | 5ab36face81d82a281b028fa |

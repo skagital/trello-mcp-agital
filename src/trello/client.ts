@@ -598,6 +598,25 @@ export class TrelloClient {
     );
   }
 
+  /**
+   * Alle offenen Karten eines Boards mit Liste, shortLink und den URLs ihrer Anhänge.
+   * Grundlage für die Epic-Suche: Hello Epics speichert Children als Karten-Link-Anhang am Epic.
+   */
+  async getBoardCardsWithAttachmentUrls(boardId: string): Promise<TrelloApiResponse<TrelloCard[]>> {
+    return this.makeRequest<TrelloCard[]>(
+      `/boards/${boardId}/cards`,
+      {
+        params: {
+          filter: 'open',
+          fields: 'name,idList,shortUrl,shortLink,closed',
+          attachments: 'true',
+          attachment_fields: 'id,name,url'
+        }
+      },
+      `Get cards with attachment urls in board ${boardId}`
+    );
+  }
+
   async getCardAttachments(cardId: string, options?: {
     fields?: string[];
   }): Promise<TrelloApiResponse<any[]>> {

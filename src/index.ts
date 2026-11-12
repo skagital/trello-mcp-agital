@@ -70,10 +70,18 @@ import {
   trelloDeleteCommentTool, handleTrelloDeleteComment
 } from './tools/comments.js';
 
+import {
+  trelloGetEpicChildrenTool, handleTrelloGetEpicChildren,
+  trelloFindEpicTool, handleTrelloFindEpic,
+  trelloAddEpicChildrenTool, handleTrelloAddEpicChildren,
+  trelloRemoveEpicChildTool, handleTrelloRemoveEpicChild,
+  trelloMoveEpicTool, handleTrelloMoveEpic
+} from './tools/epics.js';
+
 const server = new Server(
   {
     name: 'trello-agital',
-    version: '1.5.0',
+    version: '1.6.0',
   },
   {
     capabilities: {
@@ -102,7 +110,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       // Label write operations
       trelloAddCardLabelTool, trelloRemoveCardLabelTool,
       // Comment write operations
-      trelloUpdateCommentTool, trelloDeleteCommentTool
+      trelloUpdateCommentTool, trelloDeleteCommentTool,
+      // Epics (Hello Epics)
+      trelloGetEpicChildrenTool, trelloFindEpicTool,
+      trelloAddEpicChildrenTool, trelloRemoveEpicChildTool,
+      trelloMoveEpicTool
     ]
   };
 });
@@ -147,6 +159,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     // Comment write operations
     case 'trello_update_comment': return await handleTrelloUpdateComment(argsWithCredentials);
     case 'trello_delete_comment': return await handleTrelloDeleteComment(argsWithCredentials);
+    // Epics (Hello Epics)
+    case 'trello_get_epic_children': return await handleTrelloGetEpicChildren(argsWithCredentials);
+    case 'trello_find_epic': return await handleTrelloFindEpic(argsWithCredentials);
+    case 'trello_add_epic_children': return await handleTrelloAddEpicChildren(argsWithCredentials);
+    case 'trello_remove_epic_child': return await handleTrelloRemoveEpicChild(argsWithCredentials);
+    case 'trello_move_epic': return await handleTrelloMoveEpic(argsWithCredentials);
     default: throw new Error(`Unknown tool: ${name}`);
   }
 });

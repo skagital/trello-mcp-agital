@@ -42,6 +42,7 @@ export interface TrelloCard {
   closed: boolean;
   url: string;
   shortUrl: string;
+  shortLink?: string;
   pos: number;
   idBoard: string;
   idList: string;
