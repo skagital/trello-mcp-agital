@@ -222,7 +222,7 @@ export const addAttachmentFileSchema = z.object({
   name: z.string().max(256).optional()
 });
 
-export const deleteAttachmentSchema = z.object({
+export const cardAttachmentSchema = z.object({
   apiKey: z.string().min(1, 'API key is required'),
   token: z.string().min(1, 'Token is required'),
   cardId: trelloIdSchema,
@@ -260,7 +260,11 @@ export function validateAddAttachmentFile(data: unknown) {
 }
 
 export function validateDeleteAttachment(data: unknown) {
-  return deleteAttachmentSchema.parse(data);
+  return cardAttachmentSchema.parse(data);
+}
+
+export function validateDownloadAttachment(data: unknown) {
+  return cardAttachmentSchema.parse(data);
 }
 
 export function formatValidationError(error: z.ZodError): string {

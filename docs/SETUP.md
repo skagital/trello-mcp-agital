@@ -344,6 +344,7 @@ Suche nach "responsive" im Product Backlog
 | `trello_add_attachment_url` | URL als Anhang hinzufügen | "Häng den Link an Karte X" |
 | `trello_add_attachment_file` | Datei an Karte anhängen | "Lade screenshot.png auf Karte X hoch" |
 | `trello_delete_attachment` | Anhang entfernen | "Lösche den Anhang von Karte X" |
+| `trello_download_attachment` | Anhang herunterladen (Text inline, sonst Datei im Temp-Verzeichnis) | "Zeig mir den Inhalt von Anhang Y an Karte X" |
 
 ---
 

@@ -72,7 +72,7 @@ trello-mcp-agital/
 │   │   ├── members.ts             # get_user_boards, get_member
 │   │   ├── advanced.ts            # board_cards, card_actions, attachments, checklists (read)
 │   │   ├── checklists.ts          # create_checklist, add/update/delete checklist items
-│   │   └── attachments.ts         # add_attachment_url, add_attachment_file, delete_attachment
+│   │   └── attachments.ts         # add_attachment_url, add_attachment_file, delete_attachment, download_attachment
 │   ├── trello/client.ts           # Trello API Client mit Retry-Logik
 │   └── utils/validation.ts        # Zod-Validierung (gepatcht: akzeptiert shortLinks)
 ├── dist/                           # Kompiliertes JavaScript (ESM)
