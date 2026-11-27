@@ -1,10 +1,14 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join } from 'node:path';
 import { TrelloClient } from '../trello/client.js';
 import { extractErrorMessage } from '../utils/errors.js';
 import {
   validateAddAttachmentUrl,
   validateAddAttachmentFile,
-  validateDeleteAttachment
+  validateDeleteAttachment,
+  validateDownloadAttachment
 } from '../utils/validation.js';
 
 // ── Add Attachment (URL) ───────────────────────────────────────────
@@ -204,6 +208,81 @@ export async function handleTrelloDeleteAttachment(args: unknown) {
 
     return {
       content: [{ type: 'text' as const, text: `Error deleting attachment: ${errorMessage}` }],
+      isError: true
+    };
+  }
+}
+
+// ── Download Attachment ────────────────────────────────────────────
+
+const MAX_INLINE_TEXT_BYTES = 1024 * 1024;
+const TEXT_EXTENSIONS = /\.(md|markdown|txt|csv|tsv|json|ya?ml|xml|html?|css|js|ts|sql|log)$/i;
+
+export const trelloDownloadAttachmentTool: Tool = {
+  name: 'trello_download_attachment',
+  description: 'Download an uploaded file attachment of a Trello card. A text file (Markdown, CSV, JSON, HTML, ...) up to 1 MB comes back inline as text; any other file is saved to a local temp directory and its path comes back.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      apiKey: {
+        type: 'string',
+        description: 'Trello API key (automatically provided by Claude.app from your stored credentials)'
+      },
+      token: {
+        type: 'string',
+        description: 'Trello API token (automatically provided by Claude.app from your stored credentials)'
+      },
+      cardId: {
+        type: 'string',
+        description: 'ID of the card containing the attachment',
+        pattern: '^[a-zA-Z0-9]{1,24}$'
+      },
+      attachmentId: {
+        type: 'string',
+        description: 'ID of the attachment to download (get this from trello_get_card_attachments)',
+        pattern: '^[a-zA-Z0-9]{1,24}$'
+      }
+    },
+    required: ['apiKey', 'token', 'cardId', 'attachmentId']
+  }
+};
+
+export async function handleTrelloDownloadAttachment(args: unknown) {
+  try {
+    const { apiKey, token, cardId, attachmentId } = validateDownloadAttachment(args);
+    const client = new TrelloClient({ apiKey, token });
+
+    const { data: attachment } = await client.getCardAttachment(cardId, attachmentId);
+    if (!attachment.isUpload) {
+      return {
+        content: [{ type: 'text' as const, text: `"${attachment.name}" is a link, not an uploaded file: ${attachment.url}` }]
+      };
+    }
+
+    const { body, contentType } = await client.downloadAttachment(attachment.url);
+    const isText = TEXT_EXTENSIONS.test(attachment.name) || /^text\/|json|xml/.test(contentType);
+    if (isText && body.length <= MAX_INLINE_TEXT_BYTES) {
+      return {
+        content: [{ type: 'text' as const, text: `=== ${attachment.name} (${body.length} bytes) ===\n${body.toString('utf8')}` }]
+      };
+    }
+
+    const dir = join(tmpdir(), 'trello-attachments');
+    await mkdir(dir, { recursive: true });
+    const filePath = join(dir, `${attachmentId}-${basename(attachment.name).replace(/[^\w.-]/g, '_')}`);
+    await writeFile(filePath, body);
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Saved "${attachment.name}" (${body.length} bytes, ${contentType || 'unknown type'}) to ${filePath}`
+      }]
+    };
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error);
+
+    return {
+      content: [{ type: 'text' as const, text: `Error downloading attachment: ${errorMessage}` }],
       isError: true
     };
   }

@@ -779,6 +779,42 @@ export class TrelloClient {
     }
   }
 
+  async getCardAttachment(cardId: string, attachmentId: string): Promise<TrelloApiResponse<TrelloAttachment>> {
+    return this.makeRequest<TrelloAttachment>(
+      `/cards/${cardId}/attachments/${attachmentId}`,
+      {},
+      `Get attachment ${attachmentId} of card ${cardId}`
+    );
+  }
+
+  /**
+   * Trello serves uploaded files only with the OAuth header; the key and token
+   * query parameters of the REST API do not work for downloads. The header goes
+   * only to trello.com, so a link attachment never receives the credentials.
+   */
+  async downloadAttachment(url: string): Promise<{ body: Buffer; contentType: string }> {
+    const { protocol, hostname } = new URL(url);
+    if (protocol !== 'https:' || !/^(api\.)?trello\.com$/.test(hostname)) {
+      throw new Error(`Refusing to send Trello credentials to ${hostname}`);
+    }
+
+    const response = await this.fetchWithTimeout(url, {
+      timeout: 60000,
+      headers: {
+        Authorization: `OAuth oauth_consumer_key="${this.credentials.apiKey}", oauth_token="${this.credentials.token}"`,
+        'User-Agent': 'TrelloMCPServer/1.0.0 (Node.js 22)'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Download failed with status ${response.status}`);
+    }
+
+    return {
+      body: Buffer.from(await response.arrayBuffer()),
+      contentType: response.headers.get('content-type') ?? ''
+    };
+  }
+
   async deleteAttachment(cardId: string, attachmentId: string): Promise<TrelloApiResponse<void>> {
     return this.makeRequest<void>(
       `/cards/${cardId}/attachments/${attachmentId}`,

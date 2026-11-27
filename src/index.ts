@@ -57,7 +57,8 @@ import {
 import {
   trelloAddAttachmentUrlTool, handleTrelloAddAttachmentUrl,
   trelloAddAttachmentFileTool, handleTrelloAddAttachmentFile,
-  trelloDeleteAttachmentTool, handleTrelloDeleteAttachment
+  trelloDeleteAttachmentTool, handleTrelloDeleteAttachment,
+  trelloDownloadAttachmentTool, handleTrelloDownloadAttachment
 } from './tools/attachments.js';
 
 import {
@@ -98,7 +99,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       trelloAddCommentTool, trelloGetListCardsTool, trelloCreateListTool,
       listBoardsTool, getListsTool, trelloGetMemberTool,
       trelloGetBoardCardsTool, trelloGetCardActionsTool,
-      trelloGetCardAttachmentsTool, trelloGetCardChecklistsTool,
+      trelloGetCardAttachmentsTool, trelloDownloadAttachmentTool, trelloGetCardChecklistsTool,
       trelloGetBoardMembersTool, trelloGetBoardLabelsTool,
       // Checklist write operations
       trelloCreateChecklistTool, trelloAddChecklistItemTool,
@@ -140,6 +141,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     case 'trello_get_board_cards': return await handleTrelloGetBoardCards(argsWithCredentials);
     case 'trello_get_card_actions': return await handleTrelloGetCardActions(argsWithCredentials);
     case 'trello_get_card_attachments': return await handleTrelloGetCardAttachments(argsWithCredentials);
+    case 'trello_download_attachment': return await handleTrelloDownloadAttachment(argsWithCredentials);
     case 'trello_get_card_checklists': return await handleTrelloGetCardChecklists(argsWithCredentials);
     case 'trello_get_board_members': return await handleTrelloGetBoardMembers(argsWithCredentials);
     case 'trello_get_board_labels': return await handleTrelloGetBoardLabels(argsWithCredentials);
